@@ -1,26 +1,23 @@
 import React, { Component } from "react";
 import { ReactComponent as ReactLogo } from "./logo.svg";
-import "./App.css";
+import { BrowserRouter } from "react-router-dom";
+import Routes from "./routes";
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware } from "redux";
 
-function App() {
-  return (
-    <div className='App'>
-      <header className='App-header'>
-        <ReactLogo className='App-logo' />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className='App-link'
-          href='https://reactjs.org'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import createSagaMiddleware from "redux-saga";
+import rootReducer from "./redux/reducers";
+import rootSaga from "./sagas";
 
-export default App;
+const sagaMiddleware = createSagaMiddleware();
+const store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
+sagaMiddleware.run(rootSaga);
+
+const AppRouter = () => (
+  <Provider store={store}>
+    <BrowserRouter>
+      <Routes />
+    </BrowserRouter>
+  </Provider>
+);
+export default AppRouter;
